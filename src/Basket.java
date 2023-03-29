@@ -29,7 +29,7 @@ public class Basket implements Serializable {
             if (quantities[i] > 0) {
                 int currentPrices = prices[i] * quantities[i];
                 totalPrice += currentPrices;
-                System.out.println (goods[i] + " " + prices[i] + " " + quantities[i] + " " + currentPrices);
+                System.out.println(goods[i] + " " + prices[i] + " " + quantities[i] + " " + currentPrices);
             }
         }
         System.out.println("Итого " + totalPrice);
@@ -49,6 +49,7 @@ public class Basket implements Serializable {
             out.println();
         }
     }
+
     public static Basket loadFromTxtFile(File textFile) throws IOException {
         Basket basket = new Basket();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
@@ -71,5 +72,26 @@ public class Basket implements Serializable {
         return basket;
     }
 
+    public void saveBin(File file) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static Basket loadFromBinFile(File file) {
+        Basket basket = null;
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            basket = (Basket) ois.readObject();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return basket;
+    }
 }
+
 
