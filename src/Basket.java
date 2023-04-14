@@ -1,3 +1,6 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +11,30 @@ public class Basket implements Serializable {
     private String[] goods;
     private int[] prices;
     private int[] quantities;
+
+    public String[] getGoods() {
+        return goods;
+    }
+
+    public int[] getPrices() {
+        return prices;
+    }
+
+    public int[] getQuantities() {
+        return quantities;
+    }
+
+    public void setGoods(String[] goods) {
+        this.goods = goods;
+    }
+
+    public void setPrices(int[] prices) {
+        this.prices = prices;
+    }
+
+    public void setQuantities(int[] quantities) {
+        this.quantities = quantities;
+    }
 
     public Basket() {
     }
@@ -29,7 +56,7 @@ public class Basket implements Serializable {
             if (quantities[i] > 0) {
                 int currentPrices = prices[i] * quantities[i];
                 totalPrice += currentPrices;
-                System.out.println (goods[i] + " " + prices[i] + " " + quantities[i] + " " + currentPrices);
+                System.out.println(goods[i] + " " + prices[i] + " " + quantities[i] + " " + currentPrices);
             }
         }
         System.out.println("Итого " + totalPrice);
@@ -37,38 +64,31 @@ public class Basket implements Serializable {
 
     public void saveTxt(File textFile) throws IOException {
         File file;
-        try (PrintWriter out = new PrintWriter(textFile);) {
-            for (String g : goods)
-                out.print(g + " ");
-            out.println();
-            for (int p : prices)
-                out.print(p + " ");
-            out.println();
-            for (int q : quantities)
-                out.print(q + " ");
-            out.println();
-        }
-    }
-    public static Basket loadFromTxtFile(File textFile) throws IOException {
-        Basket basket = new Basket();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
-            String goodsString = bufferedReader.readLine().trim();
-            String pricesString = bufferedReader.readLine().trim();
-            String quantitiesString = bufferedReader.readLine().trim();
+        try (PrintWriter out = new PrintWriter(textFile)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+            String basket = objectMapper.writeValueAsString(this);
+            out.print(basket);
 
-            basket.goods = goodsString.split(" ");
-            basket.prices = Arrays.stream(pricesString.split(" "))
-                    .map(Integer::parseInt)
-                    .mapToInt(Integer::intValue)
-                    .toArray();
-            basket.quantities = Arrays.stream(quantitiesString.split(" "))
-                    .map(Integer::parseInt)
-                    .mapToInt(Integer::intValue)
-                    .toArray();
+        }
+
+//        {
+//            "goods": ["Хлеб", "Гречка"],
+//            "prices": [100,200],
+//            "quantities: [2,2]
+//        }
+    }
+
+    public static Basket loadFromTxtFile(File textFile) throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
+            String basketString = bufferedReader.readLine().trim();
+            ObjectMapper objectMapper = new ObjectMapper();
+            Basket basket = objectMapper.readValue(basketString, Basket.class);
+            return basket;
+
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        return basket;
     }
 
 }

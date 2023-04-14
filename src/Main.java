@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-
+    static ClientLog clientLog = new ClientLog();
     static Scanner scanner = new java.util.Scanner(System.in);
     static String[] products = {"Хлеб", "Молоко", "Гречка"};
     static int[] prices = {14, 50, 80};
@@ -29,10 +29,12 @@ public class Main {
             String[] parts = input.split(" ");
             int productNumber = Integer.parseInt(parts[0]) - 1;
             int productCount = Integer.parseInt(parts[1]);
+            clientLog.log(productNumber + 1, productCount);
             basket.addToCart(productNumber, productCount);
             basket.saveTxt(saveFile);
         }
         basket.printCart();
+        clientLog.exportAsCSV(new File ("log.csv"));
     }
 
     private static void showPrice() {
