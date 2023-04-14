@@ -1,16 +1,21 @@
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
     static ClientLog clientLog = new ClientLog();
+    static Config config;
     static Scanner scanner = new java.util.Scanner(System.in);
     static String[] products = {"Хлеб", "Молоко", "Гречка"};
     static int[] prices = {14, 50, 80};
     static File saveFile = new File("basket.txt");
 
     public static void main(String[] args) throws IOException {
-
+        File file = new File("shop.xml");
+        XmlMapper xmlMapper = new XmlMapper();
+        config = xmlMapper.readValue(file, Config.class);
         Basket basket = null;
         if (saveFile.exists()) {
             basket = Basket.loadFromTxtFile(saveFile);
@@ -34,7 +39,7 @@ public class Main {
             basket.saveTxt(saveFile);
         }
         basket.printCart();
-        clientLog.exportAsCSV(new File ("log.csv"));
+        clientLog.exportAsCSV(new File("log.csv"));
     }
 
     private static void showPrice() {
