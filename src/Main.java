@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    static ClientLog clientLog = new ClientLog();
-    static Config config;
-    static Scanner scanner = new java.util.Scanner(System.in);
-    static String[] products = {"Хлеб", "Молоко", "Гречка"};
-    static int[] prices = {14, 50, 80};
-    static File saveFile = new File("basket.txt");
+    private static ClientLog clientLog = new ClientLog();
+    private static Config config;
+    private static Scanner scanner = new java.util.Scanner(System.in);
+    private static String[] products = {"Хлеб", "Молоко", "Гречка"};
+    private static int[] prices = {14, 50, 80};
+    private static File saveFile = new File("basket.json");
 
     public static void main(String[] args) throws IOException {
         File file = new File("shop.xml");
@@ -18,7 +18,7 @@ public class Main {
         config = xmlMapper.readValue(file, Config.class);
         Basket basket = null;
         if (saveFile.exists()) {
-            basket = Basket.loadFromTxtFile(saveFile);
+            basket = Basket.loadFromJsonFile(saveFile);
         } else {
             basket = new Basket(products, prices);
         }
@@ -36,7 +36,7 @@ public class Main {
             int productCount = Integer.parseInt(parts[1]);
             clientLog.log(productNumber + 1, productCount);
             basket.addToCart(productNumber, productCount);
-            basket.saveTxt(saveFile);
+            basket.saveJson(saveFile);
         }
         basket.printCart();
         clientLog.exportAsCSV(new File("log.csv"));

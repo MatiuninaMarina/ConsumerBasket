@@ -2,9 +2,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class Basket implements Serializable {
     private static final long SerialversionUID = 1L;
@@ -62,7 +59,7 @@ public class Basket implements Serializable {
         System.out.println("Итого " + totalPrice);
     }
 
-    public void saveTxt(File textFile) throws IOException {
+    public void saveJson(File textFile) throws IOException {
         File file;
         try (PrintWriter out = new PrintWriter(textFile)) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -79,7 +76,7 @@ public class Basket implements Serializable {
 //        }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws IOException {
+    public static Basket loadFromJsonFile(File textFile) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(textFile))) {
             String basketString = bufferedReader.readLine().trim();
             ObjectMapper objectMapper = new ObjectMapper();
